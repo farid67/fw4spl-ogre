@@ -35,10 +35,10 @@ Plugin::~Plugin() throw()
 void Plugin::start() throw(::fwRuntime::RuntimeException)
 {
     // Redirect Ogre Log to FW4SPL Log
-    ::Ogre::LogManager *logMgr = new ::Ogre::LogManager();
-    ::Ogre::Log *log           = logMgr->createLog("Ogre.log", true, false, false);
-    log->addListener(new F4SOgreListener());
-    log->setLogDetail(::Ogre::LL_BOREME);
+//    ::Ogre::LogManager *logMgr = new ::Ogre::LogManager();
+//    ::Ogre::Log *log           = logMgr->createLog("home/farid/Ogre.log", true, false, false);
+//    log->addListener(new F4SOgreListener());
+//    log->setLogDetail(::Ogre::LL_BOREME);
 }
 
 //------------------------------------------------------------------------------

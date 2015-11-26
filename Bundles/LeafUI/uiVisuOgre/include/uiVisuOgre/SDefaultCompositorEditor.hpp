@@ -9,6 +9,7 @@
 
 #include <fwRenderOgre/Layer.hpp>
 #include <fwRenderOgre/compositor/DefaultCompositor.hpp>
+#include <fwRenderOgre/compositor/SaoCompositorChainManager.hpp>
 
 #include <gui/editor/IEditor.hpp>
 
@@ -78,6 +79,8 @@ protected:
     std::vector< ::fwRenderOgre::Layer::sptr > m_layers;
     ::fwRenderOgre::Layer::sptr m_currentLayer;
     ::fwRenderOgre::DefaultCompositor::sptr m_currentDefaultCompositor;
+    // we need a pointer to the SaoChainManager class
+    ::fwRenderOgre::SaoCompositorChainManager::sptr m_saoChainManager;
 
 protected Q_SLOTS:
 
@@ -85,6 +88,8 @@ protected Q_SLOTS:
     void onUseCelShading(int state);
     void onEditTransparencyDepth(int depth);
     void onEditTransparency(int index);
+    // Farid : slot for the m_SAOCheckBox
+    void onSaoCheck(int state);
 
 private:
     QWidget* m_container;
@@ -95,6 +100,9 @@ private:
     QPointer<QSlider> m_transparencyDepthSlider;
     QPointer<QComboBox> m_comboBox;
     QPointer<QCheckBox> m_useCelShadingCheckBox;
+    // Farid
+    QPointer<QCheckBox> m_SAOCheckBox;
+    // end Farid
     QRadioButton* m_buttonDefault;
     QRadioButton* m_buttonDepthPeeling;
     QRadioButton* m_buttonDualDepthPeeling;

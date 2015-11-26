@@ -20,7 +20,7 @@ compositor Default
 			 {
 			 }
 		 }
-		 
+
 		// Final pass
 		target_output
 		{

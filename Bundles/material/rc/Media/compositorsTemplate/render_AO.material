@@ -1,0 +1,42 @@
+vertex_program stdPos_VP glsl
+{
+    source stdPos_VP.glsl
+    default_params
+    {
+        param_named_auto MVP worldviewproj_matrix
+    }
+}
+
+
+
+fragment_program AO_render_FP glsl
+{
+    source AO_render_FP.glsl
+    default_params
+    {
+        param_named_auto u_vpWidth viewport_width
+        param_named_auto u_vpHeight viewport_height
+    }
+}
+
+material render_AO
+{
+    technique
+    {
+        pass
+        {
+            vertex_program_ref stdPos_VP
+            {
+            }
+
+            fragment_program_ref AO_render_FP
+            {
+                param_named scale int 2
+            }
+
+            texture_unit AO_map
+            {
+            }
+        }
+    }
+}

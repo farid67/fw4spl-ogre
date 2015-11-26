@@ -82,6 +82,20 @@ void SDefaultCompositorEditor::starting() throw(::fwTools::Failed)
         m_useCelShadingCheckBox->setCheckState(Qt::CheckState(false));
         layout->addWidget(m_useCelShadingCheckBox);
     }
+    // --------------------------------------
+    // Farid : try to add some SAO cell here
+    // --------------------------------------
+    {
+        // add label
+        QLabel* labelSAO = new QLabel(tr("SAO"),m_container);
+        layout->addWidget(labelSAO);
+        // add Check box
+        m_SAOCheckBox = new QCheckBox(m_container);
+        m_SAOCheckBox->setCheckable(false);
+        m_SAOCheckBox->setCheckState(Qt::CheckState(false));
+        layout->addWidget(m_SAOCheckBox);
+    }
+
 
     // Transparency depth managment
     {
@@ -168,6 +182,9 @@ void SDefaultCompositorEditor::starting() throw(::fwTools::Failed)
                       SLOT(onEditTransparencyDepth(int)) );
 
     QObject::connect(m_transparencyButtonGroup, SIGNAL(buttonClicked(int)), this, SLOT(onEditTransparency(int)));
+
+    // here we connect the sao check box with the correct method
+    QObject::connect(m_SAOCheckBox,SIGNAL(stateChanged(int)),this,SLOT(onSaoCheck(int)));
 }
 
 //------------------------------------------------------------------------------
@@ -246,6 +263,8 @@ void SDefaultCompositorEditor::onSelectedLayerItem(int index)
         m_labelDualDepthPeeling->setEnabled(true);
         m_labelWeightedBlendedOIT->setEnabled(true);
         m_labelHybridTransparency->setEnabled(true);
+        // here we enable the Sao button
+        m_SAOCheckBox->setCheckable(true);
     }
 
     // Reloads buttons to match layer's parameters
@@ -350,6 +369,27 @@ void SDefaultCompositorEditor::onEditTransparency(int index)
         this->update();
     }
 }
+
+// --- Farid
+
+// here we add the method which is called when the sao button is checked
+
+void SDefaultCompositorEditor::onSaoCheck(int state)
+{
+    // try to hard launch the MipMap compositor -> fail..
+    /*
+    ::Ogre::CompositorManager::getSingletonPtr()->removeCompositorChain(m_currentLayer->getViewport());
+    ::Ogre::CompositorManager::getSingletonPtr()->addCompositor(m_currentLayer->getViewport(), "MipMap");
+    ::Ogre::CompositorManager::getSingletonPtr()->setCompositorEnabled(m_currentLayer->getViewport(), "MipMap", true);
+    */
+
+
+    // need to change the behaviour of the 3D layer selector -> when selected a good layer, set enable the sao Button
+    m_saoChainManager = m_currentLayer->getSaoManager();
+    m_saoChainManager->setSaoState(state == Qt::Checked);
+    this->update();
+}
+
 
 //------------------------------------------------------------------------------
 

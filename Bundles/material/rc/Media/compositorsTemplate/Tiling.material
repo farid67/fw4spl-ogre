@@ -30,7 +30,7 @@ material Tiling
 
 			fragment_program_ref Tiling_FP
 			{
-				param_named NumTiles float 75.0
+                                param_named NumTiles float 75.0
 				param_named Threshold float 1.
 			}
 

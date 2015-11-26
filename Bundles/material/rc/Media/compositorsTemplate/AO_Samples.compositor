@@ -1,0 +1,44 @@
+compositor AO_Samples
+{
+    technique
+    {
+        // Temporary textures -> this texture is considered to be the MipMap texture
+        texture rt0 target_width target_height PF_FLOAT32_R
+        //texture rt1 target_width target_height PF_FLOAT32_R
+
+        // texture for the AO_map -> RGB (a, 1/256 * fix ....)
+        texture AO_map target_width target_height PF_A8R8G8B8
+
+        // texture with only the float value of A
+        //texture AO_map target_width target_height PF_FLOAT32_R
+
+        //target rt1
+        //{
+            // Render output from previous compositor (or original scene)
+          //  input previous
+        //}
+
+        target AO_map
+        {
+            input none
+            pass render_quad
+            {
+                material AO_mat
+                input 0 rt0
+            }
+        }
+
+        target_output
+        {
+            // Start with clear output
+            input none
+            // Draw a fullscreen quad with the black and white image
+            pass render_quad
+            {
+                // Renders a fullscreen quad with a material
+                material render_AO
+                input 0 AO_map
+            }
+        }
+    }
+}

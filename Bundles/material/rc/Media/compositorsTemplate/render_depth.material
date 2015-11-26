@@ -1,0 +1,42 @@
+vertex_program stdPos_VP glsl
+{
+    source stdPos_VP.glsl
+    default_params
+    {
+        param_named_auto MVP worldviewproj_matrix
+    }
+}
+
+
+
+fragment_program depth_render_FP glsl
+{
+    source depth_render_FP.glsl
+    default_params
+    {
+        param_named_auto u_vpWidth viewport_width
+        param_named_auto u_vpHeight viewport_height
+    }
+}
+
+material render_depth
+{
+    technique
+    {
+        pass
+        {
+            vertex_program_ref stdPos_VP
+            {
+            }
+
+            fragment_program_ref depth_render_FP
+            {
+
+            }
+
+            texture_unit Mip_current
+            {
+            }
+        }
+    }
+}

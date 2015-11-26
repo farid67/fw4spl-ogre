@@ -1,0 +1,58 @@
+vertex_program stdPos_VP glsl
+{
+    source stdPos_VP.glsl
+    default_params
+    {
+        param_named_auto MVP worldviewproj_matrix
+    }
+}
+
+
+vertex_program std_VP glsl
+{
+    source StdQuad_Tex2a_VP.glsl
+    default_params
+    {
+        param_named_auto worldViewProj worldviewproj_matrix
+    }
+}
+
+vertex_program samples_VP glsl
+{
+    source samples_VP.glsl
+    default_params
+    {
+        param_named_auto MVP worldviewproj_matrix
+        param_named_auto w viewport_width
+        param_named_auto h viewport_height
+    }
+}
+
+
+fragment_program Red_FP glsl
+{
+    source Red_FP.glsl
+}
+
+
+material Red
+{
+    technique
+    {
+        pass
+        {
+            vertex_program_ref samples_VP
+            {
+            }
+
+            fragment_program_ref Red_FP
+            {
+            }
+
+            texture_unit MipMap_tex
+            {
+            }
+
+        }
+    }
+}
