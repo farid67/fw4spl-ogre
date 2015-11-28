@@ -8,5 +8,5 @@ out float profondeur;
 
 void main()
 {
-    profondeur = (zn*zf) / ( pos.z * (zn-zf) + zf);
+    profondeur = (zn*zf) / ( gl_FragCoord.z * (zn-zf) + zf);
 }
