@@ -5,7 +5,7 @@ compositor Test
     {
         // Temporary textures -> this texture is considered to be the MipMap texture
         texture rt0 target_width target_height PF_FLOAT32_R
-        texture rt1 target_width target_height PF_FLOAT32_R
+        texture rt1 target_width target_height PF_A8R8G8B8
 
         target rt1
         {
@@ -22,7 +22,7 @@ compositor Test
             {
                 // Renders a fullscreen quad with a material
                 material Red
-                input 0 rt0
+                input 0 rt1
             }
         }
     }

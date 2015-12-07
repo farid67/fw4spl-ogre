@@ -16,9 +16,7 @@ void main()
     // normalisation
     vec2 texCoord = gl_FragCoord.xy/vec2(u_vpWidth,u_vpHeight);
 
-    fragColour.rgb = vec3(texture(AO_map,texCoord).rgb);
-
-    /*
+//    fragColour.rgb = vec3(texture(AO_map,texCoord).rgb);
 
     vec4 tmp = texture(AO_map,texCoord);
 
@@ -51,47 +49,13 @@ void main()
             float weight = 0.3 + gaussian[abs(r)];
 
             // bilateral weight
-            weight *= max (0.0, 1.0 - 1000.0 * abs(tapKey - key));
+            weight *= max (0.0, 1.0 - 2000.0 * abs(tapKey - key));
 
             sum += value * weight;
             total_weight += weight;
         }
     }
 
-    fragColour.rgb = vec3(sum/(total_weight+epsilon));
-
-    // need the vertical part, here or in an other material
-
-    //experimental
-    /*
-    sum = fragColour.r;
-
-    total_weight = base_weight;
-    sum*= total_weight;
-
-    for (r=-4; r<=4; ++r)
-    {
-        if (r!=0)
-        {
-            // vertical = vec2(0,1)
-            vec2 uv =  (vec2(gl_FragCoord.xy) + vec2(0,1) * (r * scale))/vec2(u_vpWidth,u_vpHeight) ;
-            tmp = texture(AO_map,uv);
-            float tapKey = tmp.y * (256.0 / 257.0) + tmp.z * (1.0 / 257.0);
-            float value = tmp.x;
-
-            // spatial domain -> gaussian tap
-            float weight = 0.3 + gaussian[abs(r)];
-
-            // bilateral weight
-            weight *= max (0.0, 1.0 - 1000.0 * abs(tapKey - key));
-
-            sum += value * weight;
-            total_weight += weight;
-        }
-    }
-
-    fragColour.rgb = vec3(sum/(total_weight+epsilon));
-
-    */
+    fragColour.r = sum/(total_weight+epsilon);
 
 }

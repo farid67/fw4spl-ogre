@@ -16,6 +16,7 @@
 #include <QObject>
 #include <QPointer>
 #include <QLabel>
+// #include <QAbstractSpinBox>
 
 #include "uiVisuOgre/config.hpp"
 
@@ -27,6 +28,10 @@ class QLineEdit;
 class QSlider;
 class QCheckBox;
 class QComboBox;
+// needed for the radius
+class QDoubleSpinBox;
+// needed for the samples number
+class QSpinBox;
 
 
 namespace uiVisuOgre
@@ -90,6 +95,10 @@ protected Q_SLOTS:
     void onEditTransparency(int index);
     // Farid : slot for the m_SAOCheckBox
     void onSaoCheck(int state);
+    // slot to change the radius value
+    void onSaoRadiusChange(double value);
+    // slot to change the number of samples used to do the SAO
+    void onSaoSampleChange(int value);
 
 private:
     QWidget* m_container;
@@ -102,6 +111,8 @@ private:
     QPointer<QCheckBox> m_useCelShadingCheckBox;
     // Farid
     QPointer<QCheckBox> m_SAOCheckBox;
+    QPointer<QDoubleSpinBox> m_SAORadius;
+    QPointer<QSpinBox> m_SAOSamples;
     // end Farid
     QRadioButton* m_buttonDefault;
     QRadioButton* m_buttonDepthPeeling;

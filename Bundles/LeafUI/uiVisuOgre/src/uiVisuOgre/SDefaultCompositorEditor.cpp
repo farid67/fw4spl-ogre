@@ -34,6 +34,7 @@
 #include <QLineEdit>
 #include <QSlider>
 #include <QCheckBox>
+#include <QDoubleSpinBox>
 
 namespace uiVisuOgre
 {
@@ -94,7 +95,40 @@ void SDefaultCompositorEditor::starting() throw(::fwTools::Failed)
         m_SAOCheckBox->setCheckable(false);
         m_SAOCheckBox->setCheckState(Qt::CheckState(false));
         layout->addWidget(m_SAOCheckBox);
+
+         // ajout d'un doubleSpinBox pour pouvoir modifier la valeur du rayon directement depuis l'interface
+
+        // radius label
+        QLabel* labelRadius = new QLabel(tr("Radius"),m_container);
+        layout->addWidget(labelRadius);
+        // add Double Spin Box
+        m_SAORadius = new QDoubleSpinBox(m_container);
+        m_SAORadius->setRange(0.10,3.00);
+//        m_SAORadius->setValue(m_saoChainManager->getSaoRadius());
+        m_SAORadius->setValue(0.85);
+        m_SAORadius->setSingleStep(0.05);
+        // by defaut this spin box in disable
+        m_SAORadius->setEnabled(false);
+        layout->addWidget(m_SAORadius);
+
+        // add a SpinBox to change the number of Samples
+        // label
+        QLabel* labelSamples = new QLabel(tr("Samples"),m_container);
+        layout->addWidget(labelSamples);
+        // add Spin Box
+        m_SAOSamples = new QSpinBox(m_container);
+        m_SAOSamples->setRange(1,30);
+        m_SAOSamples->setSingleStep(1);
+//        m_SAOSamples->setValue(m_saoChainManager->getSaoSamples());
+        m_SAOSamples->setValue(11);
+        // disable by default
+        m_SAOSamples->setEnabled(false);
+        layout->addWidget(m_SAOSamples);
+
+
     }
+
+
 
 
     // Transparency depth managment
@@ -185,6 +219,14 @@ void SDefaultCompositorEditor::starting() throw(::fwTools::Failed)
 
     // here we connect the sao check box with the correct method
     QObject::connect(m_SAOCheckBox,SIGNAL(stateChanged(int)),this,SLOT(onSaoCheck(int)));
+
+    // connection between the radius spin box and the SAO Compositor Manager Class
+    QObject::connect(m_SAORadius,SIGNAL(valueChanged(double)),this,SLOT(onSaoRadiusChange(double)));
+
+    // same for the samples number
+    QObject::connect(m_SAOSamples,SIGNAL(valueChanged(int)),this,SLOT(onSaoSampleChange(int)));
+
+
 }
 
 //------------------------------------------------------------------------------
@@ -269,6 +311,7 @@ void SDefaultCompositorEditor::onSelectedLayerItem(int index)
 
     // Reloads buttons to match layer's parameters
     m_currentLayer             = m_layers[static_cast<size_t>(index)];
+///*
     m_currentDefaultCompositor = m_currentLayer->getDefaultCompositor();
 
     // If the layer is not yet started, we can't use its default compositor
@@ -296,6 +339,8 @@ void SDefaultCompositorEditor::onSelectedLayerItem(int index)
         m_transparencyDepthSlider->setValue(m_currentDefaultCompositor->getTransparencyDepth());
         this->update();
     }
+//    */
+//    this->update();
 }
 
 //------------------------------------------------------------------------------
@@ -387,10 +432,35 @@ void SDefaultCompositorEditor::onSaoCheck(int state)
     // need to change the behaviour of the 3D layer selector -> when selected a good layer, set enable the sao Button
     m_saoChainManager = m_currentLayer->getSaoManager();
     m_saoChainManager->setSaoState(state == Qt::Checked);
+    // here we can enable/disable the SAO_radius Spin box
+    m_SAORadius->setEnabled(state);
+    // same for the samples number
+    m_SAOSamples->setEnabled(state);
+
     this->update();
 }
 
 
 //------------------------------------------------------------------------------
+
+
+void SDefaultCompositorEditor::onSaoRadiusChange(double value)
+{
+    // change the value of the radius in the SAO Chain Manager class
+    m_saoChainManager->setSaoRadius(value);
+    this->update();
+}
+
+//------------------------------------------------------------------------------
+
+void SDefaultCompositorEditor::onSaoSampleChange(int value)
+{
+    // change the value in the Sao Chain Manager
+    m_saoChainManager->setSaoSamples(value);
+    this->update();
+}
+
+//------------------------------------------------------------------------------
+
 
 } // namespace uiVisuOgre

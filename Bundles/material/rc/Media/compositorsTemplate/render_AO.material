@@ -19,7 +19,17 @@ fragment_program AO_render_FP glsl
     }
 }
 
-material render_AO
+fragment_program render_scene_FP glsl
+{
+    source render_scene_FP.glsl
+    default_params
+    {
+        param_named_auto h viewport_height
+        param_named_auto w viewport_width
+    }
+}
+
+material bilateral_AO
 {
     technique
     {
@@ -36,6 +46,29 @@ material render_AO
 
             texture_unit AO_map
             {
+            }
+        }
+    }
+}
+
+
+material render_scene
+{
+    technique
+    {
+        pass
+        {
+            vertex_program_ref stdPos_VP
+            {
+            }
+
+            fragment_program_ref render_scene_FP
+            {
+            }
+
+            texture_unit scene
+            {
+
             }
         }
     }

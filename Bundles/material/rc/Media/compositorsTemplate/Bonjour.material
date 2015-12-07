@@ -32,8 +32,18 @@ vertex_program samples_VP glsl
 fragment_program Red_FP glsl
 {
     source Red_FP.glsl
+    default_params
+    {
+        param_named_auto h viewport_height
+        param_named_auto w viewport_width
+    }
 }
 
+
+fragment_program Normal_FP glsl
+{
+    source Normal_FP.glsl
+}
 
 material Red
 {
@@ -41,7 +51,7 @@ material Red
     {
         pass
         {
-            vertex_program_ref samples_VP
+            vertex_program_ref stdPos_VP
             {
             }
 
@@ -49,7 +59,7 @@ material Red
             {
             }
 
-            texture_unit MipMap_tex
+            texture_unit scene
             {
             }
 

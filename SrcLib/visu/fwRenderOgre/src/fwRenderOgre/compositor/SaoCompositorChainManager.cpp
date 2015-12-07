@@ -8,21 +8,42 @@ namespace fwRenderOgre {
 
 //-----------------------------------------------------------------------------
 
-SaoCompositorChainManager::SaoCompositorChainManager(): m_ogreViewport(0)
+SaoCompositorChainManager::SaoCompositorChainManager(): m_ogreViewport(0),m_SaoRadius(0.85),m_SaoSamples(11)
 {
-    m_saoChain.push_back("MipMap");
 //    m_saoChain.push_back("Test");
-    m_saoChain.push_back("AO_Samples");
-    // create MipMap texture
+//    m_saoChain.push_back("MipMap");
+//    m_saoChain.push_back("AO_Samples");
+//    m_saoChain.push_back("FinalChainCompositor");
+
+    //test part
+
+//    m_saoChain.push_back("Radial Blur");
+//    m_saoChain.push_back("Bloom");
+
+
+    // test with the only compositor doing all the work
+    m_saoChain.push_back("SAO_complet");
+    m_saoChain.push_back("FinalChainCompositor");
+
 }
 
-SaoCompositorChainManager::SaoCompositorChainManager(::Ogre::Viewport* viewport): m_ogreViewport(viewport)
+SaoCompositorChainManager::SaoCompositorChainManager(::Ogre::Viewport* viewport): m_ogreViewport(viewport),m_SaoRadius(0.85),m_SaoSamples(11)
 {
     // create the chain
-    m_saoChain.push_back("MipMap");
-    //here add the second compositor
 //    m_saoChain.push_back("Test");
-    m_saoChain.push_back("AO_Samples");
+//    m_saoChain.push_back("MipMap");
+//    m_saoChain.push_back("AO_Samples");
+//    m_saoChain.push_back("FinalChainCompositor");
+
+
+    //test part
+
+//    m_saoChain.push_back("Radial Blur");
+//    m_saoChain.push_back("Bloom");
+
+    // test with only one compositor
+    m_saoChain.push_back("SAO_complet");
+    m_saoChain.push_back("FinalChainCompositor");
 
 }
 
@@ -54,28 +75,93 @@ void SaoCompositorChainManager::setSaoState(bool state)
             ::Ogre::CompositorManager::getSingletonPtr()->getCompositorChain(m_ogreViewport);
         ::Ogre::CompositorChain::InstanceIterator compIter = compChain->getCompositors();
 
-        // vérifier que les compositors MipMap et Test sont bien dans la liste
+//        compChain->removeAllCompositors();
+
+/* Init test but Don't work
+ *
+ *
+
         if (compChain->getCompositor("MipMap") == nullptr)
             compositorManager->addCompositor(m_ogreViewport,"MipMap");
 
-//        if (compChain->getCompositor("Test") == nullptr)
-//            compositorManager->addCompositor(m_ogreViewport,"Test");
-
         if (compChain->getCompositor("AO_Samples") == nullptr)
             compositorManager->addCompositor(m_ogreViewport,"AO_Samples");
+//         Attach à listener to the AO_samples compositor
+        compChain->getCompositor("AO_Samples")->addListener(new SaoListener(m_ogreViewport,this));
+
+        */
+
+/*
+ * Test with previous removing compositor in the chain
+ */
 
 
-        compChain->getCompositor("AO_Samples")->addListener(new SaoListener(m_ogreViewport));
+        /*
 
+        if (compChain->getCompositor("MipMap") != nullptr)
+        {
+            compositorManager->removeCompositor(m_ogreViewport,"MipMap"); // suppression pour ajout à la fin de la chaine
+        }
+
+        if (compChain->getCompositor("AO_Samples") != nullptr)
+        {
+            compositorManager->removeCompositor(m_ogreViewport,"AO_Samples");
+        }
+
+            compositorManager->addCompositor(m_ogreViewport,"MipMap");
+            compositorManager->addCompositor(m_ogreViewport,"AO_Samples");
+//         Attach à listener to the AO_samples compositor
+        compChain->getCompositor("AO_Samples")->addListener(new SaoListener(m_ogreViewport,this));
+
+        */
+
+
+        // FINAL VERSION (for the moment)
+
+        // one compositor
+
+
+        if (compChain->getCompositor("SAO_complet") != nullptr)
+        {
+            compositorManager->removeCompositor(m_ogreViewport,"SAO_complet"); // suppression pour ajout à la fin de la chaine
+        }
+
+        compositorManager->addCompositor(m_ogreViewport,"SAO_complet");
+        compChain->getCompositor("SAO_complet")->addListener(new SaoListener(m_ogreViewport,this));
+
+        // add the Final in the chain if not present
+        if (compChain->getCompositor("FinalChainCompositor") == nullptr)
+        {
+            compositorManager->addCompositor(m_ogreViewport,"FinalChainCompositor"); // suppression pour ajout à la fin de la chaine
+        }
+
+
+
+//        compositorManager->addCompositor(m_ogreViewport,"FinalChainCompositor");
+
+
+        // two basic compositors in the chain and see the result
+
+//        if (compChain->getCompositor("Radial Blur") == nullptr)
+//                    compositorManager->addCompositor(m_ogreViewport,"Radial Blur");
+
+//        if (compChain->getCompositor("Bloom") == nullptr)
+//                    compositorManager->addCompositor(m_ogreViewport,"Bloom");
+
+
+        // test to see the content of the Compositor chain
+
+        compIter = compChain->getCompositors();
+        int index = 0;
         // désactivation des autres compositors -> uniquement pour les tests, surement non nécessaire
-//        while( compIter.hasMoreElements())
-//        {
-//            ::Ogre::CompositorInstance* targetComp = compIter.getNext();
-//            std::cout << targetComp->getCompositor()->getName() << std::endl;
+        while( compIter.hasMoreElements())
+        {
+            ::Ogre::CompositorInstance* targetComp = compIter.getNext();
+            std::cout << "Compositor place : " << ++index << " " << targetComp->getCompositor()->getName() << std::endl;
 //            if (targetComp->getEnabled())
 //                targetComp->setEnabled(false);
 //  //              std::cout << "      Enable" << std::endl;
-//        }
+        }
 
 
         compIter = compChain->getCompositors();
@@ -109,6 +195,32 @@ void SaoCompositorChainManager::setSaoState(bool state)
         }
     }
 }
+
+
+double SaoCompositorChainManager::getSaoRadius()
+{
+    return m_SaoRadius;
+}
+
+// fonction to change the sampling radius
+void SaoCompositorChainManager::setSaoRadius(double newRadius)
+{
+    std::cout << "try to change the r value " << newRadius << std::endl;
+
+    m_SaoRadius = newRadius;
+}
+
+int SaoCompositorChainManager::getSaoSamples()
+{
+    return m_SaoSamples;
+}
+
+// fonction to change the sampling radius
+void SaoCompositorChainManager::setSaoSamples(int newSamplesNumber)
+{
+    m_SaoSamples = newSamplesNumber;
+}
+
 
 
 }// namespace fwRenderOgre

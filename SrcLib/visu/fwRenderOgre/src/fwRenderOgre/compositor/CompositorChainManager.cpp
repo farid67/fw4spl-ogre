@@ -41,7 +41,8 @@ void CompositorChainManager::addAvailableCompositor(CompositorIdType compositorN
     bool needFinalCompositorSwap(false);
 
     // If the compositor chain already contains the final compositor, we have to remove it
-    if(!m_compositorChain.empty() && m_compositorChain.back().first == FINAL_CHAIN_COMPOSITOR)
+    if(!m_compositorChain.empty() && !(compositorManager->getByName(FINAL_CHAIN_COMPOSITOR)).isNull())
+//    if(!m_compositorChain.empty() &&  m_compositorChain.back().first == FINAL_CHAIN_COMPOSITOR)
     {
         m_compositorChain.pop_back();
         compositorManager->setCompositorEnabled(m_ogreViewport, FINAL_CHAIN_COMPOSITOR, false);
@@ -101,6 +102,21 @@ void CompositorChainManager::updateCompositorState(CompositorIdType compositorNa
         if (targetComp->getEnabled())
             std::cout << "      Enable" << std::endl;
     }
+
+    compIter = compChain->getCompositors();
+
+    compIter = compChain->getCompositors();
+    int index = 0;
+
+    while( compIter.hasMoreElements())
+    {
+        ::Ogre::CompositorInstance* targetComp = compIter.getNext();
+        std::cout << "Compositor place : " << ++index << " " << targetComp->getCompositor()->getName() << std::endl;
+//            if (targetComp->getEnabled())
+//                targetComp->setEnabled(false);
+//  //              std::cout << "      Enable" << std::endl;
+    }
+
 
 }
 
