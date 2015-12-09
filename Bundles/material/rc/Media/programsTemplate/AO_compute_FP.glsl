@@ -37,7 +37,7 @@ void main()
 {
 
     // we must stay with the unit model
-    float r_fake = r * 10;
+    float r_fake = r;
 
 
     // best value for tau is 7 when s = 9
