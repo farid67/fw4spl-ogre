@@ -84,8 +84,7 @@ void main()
 //    float S = 500.0;
 
     // correct calcul from paper
-//    float S = -h/ (2.0f * tan(VerticalFieldOfView * 0.5));
-    float S = 500.0;
+    float S = -h/ (2.0f * tan(VerticalFieldOfView * 0.5));
 
     //-------------------------
     // Calcul de r'
