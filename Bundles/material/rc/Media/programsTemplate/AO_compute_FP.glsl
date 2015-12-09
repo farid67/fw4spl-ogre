@@ -37,7 +37,7 @@ void main()
 {
 
     // we must stay with the unit model
-    float r_fake = r ;
+    float r_fake = r * 10;
 
 
     // best value for tau is 7 when s = 9
@@ -84,8 +84,8 @@ void main()
 //    float S = 500.0;
 
     // correct calcul from paper
-    float S = -h/ (2.0f * tan(VerticalFieldOfView * 0.5));
-
+//    float S = -h/ (2.0f * tan(VerticalFieldOfView * 0.5));
+    float S = 500.0;
 
     //-------------------------
     // Calcul de r'

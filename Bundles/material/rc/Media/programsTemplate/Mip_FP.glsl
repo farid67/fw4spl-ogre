@@ -8,5 +8,6 @@ out float profondeur;
 
 void main()
 {
-    profondeur = (zn*zf) / ( gl_FragCoord.z * (zn-zf) + zf);
+    // correction -> value in [-1;1]
+    profondeur = (zn*zf) / ( (gl_FragCoord.z*2.0 -1.0) * (zn-zf) + zf);
 }
